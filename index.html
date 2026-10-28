@@ -4,19 +4,352 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0B0B0F">
-  <meta name="description" content="Sylvester Digital Web Force helps businesses, creators, and entrepreneurs bring their ideas to life through creative digital solutions.">
+  <meta name="description" content="Sylvester Digital Web Force helps small businesses, creators, and entrepreneurs bring their ideas to life through digital design and technology.">
   <title>Sylvester Digital Web Force | Creative Ideas. Real Solutions.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #0B0B0F;
+      --purple: #6A00FF;
+      --red: #FF1E1E;
+      --yellow: #FFD600;
+      --white: #F7F7FB;
+      --muted: #B6B4C3;
+      --panel: #14131C;
+      --border: rgba(255,255,255,.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .container { width: min(1120px, 90%); margin: auto; }
+    .orbitron { font-family: 'Orbitron', sans-serif; }
+
+    .announcement {
+      background: linear-gradient(90deg, var(--purple), #3900A8, var(--red));
+      text-align: center;
+      padding: 9px 15px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(11,11,15,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav {
+      min-height: 78px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 44px; height: 44px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--purple), #2B1458 58%, var(--red));
+      border: 1px solid rgba(255,255,255,.2);
+      box-shadow: 0 0 25px rgba(106,0,255,.22);
+      color: var(--yellow);
+      font: 800 .85rem 'Orbitron', sans-serif;
+    }
+    .brand-name { font: 700 .78rem 'Orbitron', sans-serif; letter-spacing: .035em; }
+    .brand-caption { color: var(--muted); font-size: .68rem; }
+    .nav-links { display: flex; align-items: center; gap: 24px; font-size: .86rem; }
+    .nav-links a:not(.button):hover { color: var(--yellow); }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 13px 19px;
+      border: 0;
+      border-radius: 9px;
+      background: linear-gradient(110deg, var(--purple), #8700FF);
+      color: white;
+      font-weight: 800;
+      font-size: .88rem;
+      box-shadow: 0 7px 25px rgba(106,0,255,.24);
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+    .button:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(106,0,255,.4); }
+    .button-outline { background: transparent; border: 1px solid rgba(255,255,255,.23); box-shadow: none; }
+    .button-outline:hover { border-color: var(--yellow); box-shadow: none; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 105px 0 100px;
+      background:
+        radial-gradient(ellipse at 78% 38%, rgba(106,0,255,.2), transparent 42%),
+        radial-gradient(ellipse at 15% 85%, rgba(255,30,30,.1), transparent 35%);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 340px; height: 340px;
+      right: -180px; top: 40px;
+      border: 1px solid rgba(255,214,0,.18);
+      border-radius: 50%;
+      box-shadow: 0 0 0 35px rgba(106,0,255,.04), 0 0 0 75px rgba(106,0,255,.025);
+      pointer-events: none;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 55px; align-items: center; }
+    .eyebrow { color: var(--yellow); font-size: .76rem; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
+    h1 { font: 800 clamp(2.5rem, 5.8vw, 4.8rem)/1.12 'Orbitron', sans-serif; letter-spacing: -.055em; margin: 22px 0; }
+    .gradient-text { background: linear-gradient(95deg, #fff 5%, #C5A5FF 50%, #FF6464); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero-copy { max-width: 610px; color: var(--muted); font-size: 1.06rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 30px; }
+    .hero-note { margin-top: 22px; color: #8E8A9F; font-size: .79rem; }
+    .hero-art { min-height: 360px; display: grid; place-items: center; position: relative; }
+    .orb {
+      width: min(290px, 75vw); aspect-ratio: 1;
+      display: grid; place-items: center;
+      border-radius: 35% 65% 60% 40% / 40% 40% 60% 60%;
+      background: linear-gradient(145deg, rgba(106,0,255,.3), rgba(20,19,28,.8) 50%, rgba(255,30,30,.22));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: inset 0 0 55px rgba(106,0,255,.18), 0 0 80px rgba(106,0,255,.15);
+      transform: rotate(-8deg);
+    }
+    .orb-inner {
+      width: 72%; aspect-ratio: 1; border-radius: 28%;
+      display: grid; place-items: center;
+      border: 2px solid var(--yellow);
+      background: linear-gradient(145deg, rgba(106,0,255,.65), rgba(11,11,15,.9) 60%, rgba(255,30,30,.4));
+      box-shadow: 0 0 35px rgba(255,214,0,.1);
+      transform: rotate(8deg);
+    }
+    .orb-inner span { font: 800 clamp(2rem, 5vw, 3.4rem) 'Orbitron', sans-serif; color: white; text-shadow: 0 0 24px var(--purple); }
+    .orbit-label {
+      position: absolute; right: 0; bottom: 35px;
+      background: rgba(20,19,28,.92); border: 1px solid var(--border);
+      padding: 13px 17px; border-radius: 12px;
+      color: var(--yellow); font-size: .78rem; font-weight: 700;
+    }
+
+    section { padding: 83px 0; }
+    .section-heading { max-width: 700px; margin-bottom: 38px; }
+    .section-heading h2 { font: 700 clamp(1.8rem, 4vw, 2.8rem)/1.2 'Orbitron', sans-serif; margin: 12px 0; }
+    .section-heading p { color: var(--muted); }
+    .accent { color: var(--yellow); }
+    .services { background: #0F0E15; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; }
+    .service-card {
+      padding: 25px; border: 1px solid var(--border);
+      background: linear-gradient(145deg, #171520, #111016);
+      border-radius: 15px; transition: transform .2s, border-color .2s;
+    }
+    .service-card:hover { transform: translateY(-4px); border-color: rgba(106,0,255,.75); }
+    .service-number { color: var(--yellow); font: 700 .75rem 'Orbitron', sans-serif; }
+    .service-card h3 { font-size: 1.04rem; margin: 16px 0 9px; }
+    .service-card p { color: var(--muted); font-size: .9rem; }
+    .service-icon { font-size: 1.35rem; }
+    .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .audience-card { padding: 25px; border-left: 3px solid var(--purple); background: var(--panel); border-radius: 0 12px 12px 0; }
+    .audience-card h3 { margin-bottom: 8px; }
+    .audience-card p { color: var(--muted); font-size: .9rem; }
+    .cta-band {
+      background: linear-gradient(115deg, rgba(106,0,255,.25), rgba(20,19,28,.94) 55%, rgba(255,30,30,.15));
+      border: 1px solid var(--border); border-radius: 20px; padding: 42px;
+      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    }
+    .cta-band h2 { font: 700 clamp(1.5rem, 3vw, 2.2rem) 'Orbitron', sans-serif; margin-bottom: 10px; }
+    .cta-band p { color: var(--muted); max-width: 590px; }
+    footer { border-top: 1px solid var(--border); padding: 32px 0; color: var(--muted); font-size: .83rem; }
+    .footer-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .footer-tagline { color: var(--yellow); }
+
+    @media (max-width: 800px) {
+      .nav { padding: 15px 0; align-items: flex-start; flex-direction: column; }
+      .nav-links { gap: 16px; flex-wrap: wrap; }
+      .hero { padding: 70px 0; }
+      .hero-grid { grid-template-columns: 1fr; gap: 20px; }
+      .hero-art { min-height: 285px; }
+      .service-grid { grid-template-columns: repeat(2, 1fr); }
+      .audience-grid { grid-template-columns: 1fr; }
+      .cta-band { align-items: flex-start; flex-direction: column; padding: 28px; }
+    }
+    @media (max-width: 520px) {
+      .brand-name { font-size: .67rem; }
+      .nav-links { font-size: .8rem; gap: 13px; }
+      .nav-links .button { padding: 10px 12px; }
+      .service-grid { grid-template-columns: 1fr; }
+      .hero-actions .button { width: 100%; }
+      section { padding: 60px 0; }
+    }
+  </style>
 </head>
 <body>
+  <div class="announcement">DIGITAL DESIGN · PRACTICAL TECHNOLOGY · REAL SOLUTIONS</div>
+
   <header>
-    <p>D.W.F.</p>
-    <h1>Sylvester Digital Web Force</h1>
-    <p>Creative ideas. Real solutions.</p>
+    <nav class="nav container" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="D.W.F. home">
+        <span class="brand-mark">D.W.F.</span>
+        <span>
+          <span class="brand-name">SYLVESTER DIGITAL<br>WEB FORCE</span><br>
+          <span class="brand-caption">Creative ideas. Real solutions.</span>
+        </span>
+      </a>
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#audiences">Who We Help</a>
+        <a href="#about">About</a>
+        <a class="button" href="#start">Start Your Project <span aria-hidden="true">↗</span></a>
+      </div>
+    </nav>
   </header>
 
   <main>
-    <h2>Our digital journey starts here.</h2>
-    <p>We're building something great. Check back soon.</p>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">Your vision. Our creativity. Real solutions.</p>
+          <h1>Ideas deserve to become <span class="gradient-text">something real.</span></h1>
+          <p class="hero-copy">We help small businesses, creators, and entrepreneurs bring their ideas to life through thoughtful design, practical technology, and digital experiences built around their goals.</p>
+          <div class="hero-actions">
+            <a class="button" href="#start">Start Your Project <span aria-hidden="true">↗</span></a>
+            <a class="button button-outline" href="#services">Explore Our Services</a>
+          </div>
+          <p class="hero-note">Creative thinking. Clear communication. Solutions built around you.</p>
+        </div>
+        <div class="hero-art" aria-label="D.W.F. abstract digital brand emblem">
+          <div class="orb"><div class="orb-inner"><span>D.W.F.</span></div></div>
+          <div class="orbit-label">CREATIVE IDEAS. REAL SOLUTIONS.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services" id="services">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">What we do</p>
+          <h2>Digital solutions for <span class="accent">your next move.</span></h2>
+          <p>From your first online presence to the tools that help you grow, we work with you to find the right solution for your goals.</p>
+        </div>
+        <div class="service-grid">
+          <article class="service-card">
+            <span class="service-number">01 / WEB</span>
+            <h3>Website Design &amp; Development</h3>
+            <p>Professional business websites, landing pages, portfolios, booking websites, and mobile-friendly redesigns.</p>
+          </article>
+          <article class="service-card">
+            <span class="service-number">02 / SUPPORT</span>
+            <h3>Website Management &amp; Maintenance</h3>
+            <p>Website updates, content changes, new pages, troubleshooting, and ongoing website support.</p>
+          </article>
+          <article class="service-card">
+            <span class="service-number">03 / BRAND</span>
+            <h3>Branding &amp; Graphic Design</h3>
+            <p>Logo concepts, brand identities, business cards, flyers, promotional graphics, and social media designs.</p>
+          </article>
+          <article class="service-card">
+            <span class="service-number">04 / APPS</span>
+            <h3>App Design &amp; Development</h3>
+            <p>App concepts, interface designs, prototypes, web apps, and selected mobile app projects, depending on technical requirements.</p>
+          </article>
+          <article class="service-card">
+            <span class="service-number">05 / GROWTH</span>
+            <h3>SEO &amp; Digital Growth</h3>
+            <p>Search visibility improvements, basic SEO setup, website performance improvements, and analytics support.</p>
+          </article>
+          <article class="service-card">
+            <span class="service-number">06 / SYSTEMS</span>
+            <h3>Automation &amp; Integrations</h3>
+            <p>Booking workflows, contact forms, email confirmations, reminders, and connections between supported business tools.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="audiences">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Who we help</p>
+          <h2>Built around <span class="accent">your goals.</span></h2>
+          <p>Different people have different ambitions. We start by listening, then shape a solution that fits.</p>
+        </div>
+        <div class="audience-grid">
+          <article class="audience-card">
+            <h3>Local Small Businesses</h3>
+            <p>Build your online presence, present your services clearly, and help more customers discover your business.</p>
+          </article>
+          <article class="audience-card">
+            <h3>Creators &amp; Individuals</h3>
+            <p>Showcase your work, strengthen your personal brand, and create a digital home for your ideas.</p>
+          </article>
+          <article class="audience-card">
+            <h3>Startups &amp; Entrepreneurs</h3>
+            <p>Explore your idea, develop your brand, and build a practical starting point for what comes next.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="services">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">The D.W.F. approach</p>
+          <h2>Creative thinking. <span class="accent">Practical execution.</span></h2>
+          <p>Sylvester Digital Web Force is a digital studio built around a simple idea: good digital work should look purposeful, solve real problems, and feel approachable from the first conversation.</p>
+        </div>
+        <div class="audience-grid">
+          <article class="audience-card">
+            <h3>Creative</h3>
+            <p>Distinctive ideas and thoughtful design that help your brand stand out.</p>
+          </article>
+          <article class="audience-card">
+            <h3>Professional</h3>
+            <p>Clear expectations, careful planning, and communication throughout the project.</p>
+          </article>
+          <article class="audience-card">
+            <h3>Approachable</h3>
+            <p>A collaborative process focused on understanding what you actually need.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="start">
+      <div class="container">
+        <div class="cta-band">
+          <div>
+            <p class="eyebrow">Your next chapter starts here</p>
+            <h2>Let's talk about your idea.</h2>
+            <p>Tell us what you're building, what you'd like to improve, and where you want to go. We'll learn about your needs before recommending a solution and preparing a custom quote.</p>
+          </div>
+          <a class="button" href="mailto:">Start Your Project <span aria-hidden="true">↗</span></a>
+        </div>
+        <p style="color:var(--muted);font-size:.82rem;margin-top:14px;">Project inquiries will be connected once D.W.F.'s business contact email is chosen.</p>
+      </div>
+    </section>
   </main>
+
+  <footer>
+    <div class="container footer-row">
+      <div><strong class="orbitron" style="color:white">D.W.F.</strong> &nbsp; Sylvester Digital Web Force</div>
+      <div class="footer-tagline">Creative ideas. Real solutions.</div>
+      <div>© <span id="year"></span> Sylvester Digital Web Force</div>
+    </div>
+  </footer>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
