@@ -693,54 +693,71 @@ https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    const SUPABASE_URL = "https://noxbmlesfhgsdspcpoaj.supabase.co";
-    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_JOFhXQXTovf37c42RJyQeQ_kUXNYWcW";
+<script type="module">
+  const FUNCTION_URL =
+    "https://noxbmlesfhgsdspcpoaj.supabase.co/functions/v1/dwf-submit-inquiry";
 
-    const supabase = createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_JOFhXQXTovf37c42RJyQeQ_kUXNYWcW";
 
-    const form = document.getElementById("dwf-inquiry-form");
-    const status = document.getElementById("dwf-form-status");
+  const form = document.getElementById("dwf-inquiry-form");
+  const status = document.getElementById("dwf-form-status");
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-      const button = form.querySelector('button[type="submit"]');
-      button.disabled = true;
-      status.textContent = "Sending your inquiry...";
+    const button = form.querySelector('button[type="submit"]');
+    const data = new FormData(form);
+    const token = data.get("cf-turnstile-response");
 
-      const data = new FormData(form);
+    if (!token) {
+      status.textContent = "Please complete the security check.";
+      return;
+    }
 
-      const request = {
-        customer_name: data.get("customer_name").trim(),
-        email: data.get("email").trim(),
-        phone: data.get("phone").trim(),
-        request_type: data.get("request_type").trim(),
-        message: data.get("message").trim()
-      };
+    button.disabled = true;
+    status.textContent = "Sending your inquiry...";
 
-      try {
-        const { error } = await supabase
-          .from("customer_requests")
-          .insert([request]);
+    try {
+      const response = await fetch(FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_PUBLISHABLE_KEY
+        },
+        body: JSON.stringify({
+          customer_name: String(data.get("customer_name") || "").trim(),
+          email: String(data.get("email") || "").trim(),
+          phone: String(data.get("phone") || "").trim(),
+          request_type: String(data.get("request_type") || "").trim(),
+          message: String(data.get("message") || "").trim(),
+          turnstileToken: token
+        })
+      });
 
-        if (error) throw error;
+      const result = await response.json();
 
-        status.textContent = "Thank you! Your inquiry has been received.";
-        form.reset();
-      } catch (error) {
-        console.error(error);
-        status.textContent = "We couldn't send your inquiry. Please try again.";
-      } finally {
-        button.disabled = false;
+      if (!response.ok) {
+        throw new Error(result.error || "Submission failed.");
       }
-    });
-  </script>
+
+      status.textContent = "Thank you! Your inquiry has been received.";
+      form.reset();
+
+      if (window.turnstile) {
+        window.turnstile.reset();
+      }
+    } catch (error) {
+      console.error(error);
+      status.textContent =
+        error.message || "We couldn't send your inquiry. Please try again.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+
 
 </body>
 </html>
