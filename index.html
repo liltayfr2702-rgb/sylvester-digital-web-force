@@ -193,6 +193,145 @@
       .hero-actions .button { width: 100%; }
       section { padding: 60px 0; }
     }
+/* D.W.F. — Neon Packages */
+#packages {
+  background:
+    radial-gradient(ellipse at 15% 20%, rgba(106, 0, 255, .16), transparent 45%),
+    radial-gradient(ellipse at 85% 75%, rgba(255, 30, 30, .10), transparent 45%),
+    #0b0b0f;
+}
+
+.package-intro {
+  max-width: 720px;
+  margin: 0 auto 38px;
+  text-align: center;
+}
+
+.package-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  align-items: stretch;
+}
+
+.package-bubble {
+  position: relative;
+  overflow: hidden;
+  padding: 28px 22px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 24px;
+  background: linear-gradient(155deg, #191522, #0e0e14 75%);
+  box-shadow: 0 0 22px rgba(106,0,255,.12);
+  transition: transform .25s ease, border-color .25s ease,
+    box-shadow .25s ease;
+}
+
+.package-bubble:hover,
+.package-bubble:focus-within {
+  transform: translateY(-6px);
+  border-color: var(--package-glow, #6a00ff);
+  box-shadow: 0 0 30px var(--package-shadow, rgba(106,0,255,.3));
+}
+
+.package-orb {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  margin-bottom: 20px;
+  border: 1px solid var(--package-glow, #6a00ff);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 25%, #393044, #100d17 72%);
+  color: var(--package-glow, #6a00ff);
+  font-size: 1.7rem;
+  font-weight: 900;
+  box-shadow: 0 0 22px var(--package-shadow, rgba(106,0,255,.35)),
+    inset 0 0 16px var(--package-shadow, rgba(106,0,255,.18));
+}
+
+.package-bubble h3 {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+}
+
+.package-price {
+  margin: 12px 0;
+  color: var(--package-glow, #ffd600);
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.package-price small {
+  font-size: .85rem;
+  font-weight: 500;
+}
+
+.package-bubble p,
+.package-bubble li {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.package-bubble ul {
+  padding-left: 20px;
+  margin: 18px 0 24px;
+}
+
+.package-bubble .button {
+  width: 100%;
+  justify-content: center;
+}
+
+.package-tag {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 5px 10px;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 99px;
+  color: #fff;
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.package-bubble details {
+  margin: 14px 0 20px;
+}
+
+.package-bubble summary {
+  color: var(--package-glow, #ffd600);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.package-bubble details[open] summary {
+  margin-bottom: 10px;
+}
+
+.package-note {
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .package-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .package-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .package-bubble {
+    padding: 24px 20px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -396,6 +535,136 @@
     </section>
 
     <section id="start">
+    
+<section id="packages">
+  <div class="container">
+    <div class="package-intro">
+      <p class="eyebrow">D.W.F. — Packages &amp; Pricing</p>
+      <h2>Big ideas deserve a powerful website.</h2>
+      <p>Choose a starting point. Every project is reviewed personally, with a final scope and quote agreed upon before payment.</p>
+    </div>
+
+    <div class="package-grid">
+      <article class="package-bubble" style="--package-glow:#a855f7;--package-shadow:rgba(168,85,247,.3)">
+        <div class="package-orb">S</div>
+        <span class="package-tag">Website design</span>
+        <h3>Starter Website</h3>
+        <div class="package-price">$299</div>
+        <p>A clean online home for your business or personal brand.</p>
+        <details>
+          <summary>Explore what's included</summary>
+          <ul>
+            <li>One-page website</li>
+            <li>Mobile-friendly layout</li>
+            <li>Business hours, services and contact information</li>
+            <li>Contact and social links</li>
+            <li>One revision round</li>
+          </ul>
+        </details>
+        <a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz6BHsdLAYeA/viewform?usp=sharing&amp;ouid=109205409995790628835" target="_blank" rel="noopener noreferrer">Request Starter</a>
+      </article>
+
+      <article class="package-bubble" style="--package-glow:#ff1e1e;--package-shadow:rgba(255,30,30,.3)">
+        <div class="package-orb">B</div>
+        <span class="package-tag">Most room to grow</span>
+        <h3>Business Website</h3>
+        <div class="package-price">$499</div>
+        <p>A stronger online presence built around your business.</p>
+        <details>
+          <summary>Explore what's included</summary>
+          <ul>
+            <li>Up to five pages</li>
+            <li>Custom branding and responsive design</li>
+            <li>Services and pricing section</li>
+            <li>Contact form and map where applicable</li>
+            <li>Social links</li>
+            <li>Two revision rounds</li>
+          </ul>
+        </details>
+        <a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz6BHsdLAYeA/viewform?usp=sharing&amp;ouid=109205409995790628835" target="_blank" rel="noopener noreferrer">Request Business</a>
+      </article>
+
+      <article class="package-bubble" style="--package-glow:#ffd600;--package-shadow:rgba(255,214,0,.25)">
+        <div class="package-orb">P</div>
+        <span class="package-tag">Advanced projects</span>
+        <h3>Premium Website</h3>
+        <div class="package-price">From $899</div>
+        <p>A more customized experience for bigger ideas.</p>
+        <details>
+          <summary>Explore what's included</summary>
+          <ul>
+            <li>Custom multi-page design</li>
+            <li>Enhanced user experience</li>
+            <li>Advanced features scoped to your needs</li>
+            <li>Booking or integrations where agreed</li>
+            <li>Three revision rounds</li>
+          </ul>
+        </details>
+        <a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz6BHsdLAYeA/viewform?usp=sharing&amp;ouid=109205409995790628835" target="_blank" rel="noopener noreferrer">Request Premium</a>
+      </article>
+
+      <article class="package-bubble" style="--package-glow:#38bdf8;--package-shadow:rgba(56,189,248,.25)">
+        <div class="package-orb">B</div>
+        <span class="package-tag">Monthly maintenance</span>
+        <h3>Basic Care</h3>
+        <div class="package-price">$49 <small>/ month</small></div>
+        <p>Simple upkeep to help keep your site current.</p>
+        <details>
+          <summary>Explore what's included</summary>
+          <ul>
+            <li>Up to 30 minutes of minor edits monthly</li>
+            <li>Monthly website check</li>
+            <li>Email support</li>
+          </ul>
+        </details>
+        <a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz6BHsdLAYeA/viewform?usp=sharing&amp;ouid=109205409995790628835" target="_blank" rel="noopener noreferrer">Request Basic Care</a>
+      </article>
+
+      <article class="package-bubble" style="--package-glow:#a855f7;--package-shadow:rgba(168,85,247,.3)">
+        <div class="package-orb">B+</div>
+        <span class="package-tag">More monthly support</span>
+        <h3>Business Care</h3>
+        <div class="package-price">$79 <small>/ month</small></div>
+        <p>More time for updates as your business evolves.</p>
+        <details>
+          <summary>Explore what's included</summary>
+          <ul>
+            <li>Everything in Basic Care</li>
+            <li>Up to 90 minutes of edits monthly</li>
+            <li>Link and form checks</li>
+            <li>Service, price, photo and business info updates</li>
+            <li>Priority support</li>
+          </ul>
+        </details>
+        <a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz6BHsdLAYeA/viewform?usp=sharing&amp;ouid=109205409995790628835" target="_blank" rel="noopener noreferrer">Request Business Care</a>
+      </article>
+
+      <article class="package-bubble" style="--package-glow:#ffd600;--package-shadow:rgba(255,214,0,.25)">
+        <div class="package-orb">P+</div>
+        <span class="package-tag">Premium monthly support</span>
+        <h3>Premium Care</h3>
+        <div class="package-price">$149 <small>/ month</small></div>
+        <p>More hands-on support for an evolving website.</p>
+        <details>
+          <summary>Explore what's included</summary>
+          <ul>
+            <li>Everything in Business Care</li>
+            <li>Up to three hours of edits monthly</li>
+            <li>More frequent website checks</li>
+            <li>Priority scheduling</li>
+            <li>Monthly improvement suggestions</li>
+          </ul>
+        </details>
+        <a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz6BHsdLAYeA/viewform?usp=sharing&amp;ouid=109205409995790628835" target="_blank" rel="noopener noreferrer">Request Premium Care</a>
+      </article>
+    </div>
+
+    <p class="package-note">
+      Every request is reviewed before work or payment begins. Final pricing depends on the agreed project scope. Domain registration, hosting, paid software and third-party services are separate unless specifically included in your quote. Monthly care has defined editing limits; unused time does not roll over.
+    </p>
+  </div>
+</section>
+
       <div class="container">
         <div class="cta-band">
           <div>
