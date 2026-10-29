@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>D.W.F. | Owner Dashboard</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0b0f;
+      --panel: #15151d;
+      --purple: #6a00ff;
+      --red: #ff1e1e;
+      --yellow: #ffd600;
+      --text: #f6f3ff;
+      --muted: #b8b4c7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 24px;
+      background: var(--bg); color: var(--text);
+      font: 16px/1.5 Inter, system-ui, sans-serif;
+    }
+    main { max-width: 1050px; margin: 0 auto; }
+    h1 { color: var(--yellow); }
+    h2 { margin-top: 0; }
+    .brand { color: #b78aff; font-weight: 800; letter-spacing: 2px; }
+    .panel {
+      background: var(--panel); border: 1px solid #393044;
+      border-radius: 16px; padding: 22px; margin: 20px 0;
+    }
+    input, button, select {
+      width: 100%; padding: 12px; margin: 6px 0 14px;
+      border-radius: 8px; font: inherit;
+    }
+    input, select {
+      color: var(--text); background: #0b0b12;
+      border: 1px solid #514564;
+    }
+    button {
+      background: var(--purple); color: white;
+      border: 0; font-weight: 700; cursor: pointer;
+    }
+    button.secondary { background: #30283e; }
+    button:focus-visible, input:focus-visible, select:focus-visible {
+      outline: 2px solid var(--yellow); outline-offset: 2px;
+    }
+    .muted { color: var(--muted); }
+    .notice { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .request {
+      border: 1px solid #393044; border-radius: 12px;
+      padding: 16px; margin: 14px 0;
+    }
+    .request p { overflow-wrap: anywhere; }
+    .request select { max-width: 260px; }
+    [hidden] { display: none !important; }
+    @media (min-width: 650px) {
+      .login-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <p class="brand">D.W.F. · SYLVESTER DIGITAL WEB FORCE</p>
+  <h1>Owner Dashboard</h1>
+  <p class="muted">Manage customer requests and support inquiries.</p>
+
+  <section class="panel" id="login-panel">
+    <h2>Owner Login</h2>
+    <p class="muted">Sign in with your authorized owner account.</p>
+    <form id="login-form">
+      <label for="email">Owner email</label>
+      <input id="email" type="email" autocomplete="username"
+        value="sylvesterdigitalwebforce@gmail.com" required>
+      <label for="password">Password</label>
+      <input id="password" type="password"
+        autocomplete="current-password" required>
+      <button type="submit">Sign In</button>
+    </form>
+    <p id="login-message" class="notice" role="status"></p>
+  </section>
+
+  <section id="dashboard" hidden>
+    <div class="panel">
+      <h2>Customer Requests</h2>
+      <p id="welcome" class="muted"></p>
+      <button id="refresh">Refresh Requests</button>
+      <button id="logout" class="secondary">Sign Out</button>
+      <p id="request-message" class="notice" role="status"></p>
+      <div id="requests"></div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  import { createClient } from
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+  // Replace these two placeholders with your own project details.
+  // Use only the Project URL and publishable key here.
+  const SUPABASE_URL = 'https://noxbmlesfhgsdspcpoaj.supabase.co/rest/v1/';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_JOFhXQXTovf37c42RJyQeQ_kUXNYWcW';
+  const OWNER_EMAIL = 'sylvesterdigitalwebforce@gmail.com';
+
+  const loginPanel = document.querySelector('#login-panel');
+  const loginForm = document.querySelector('#login-form');
+  const loginMessage = document.querySelector('#login-message');
+  const dashboard = document.querySelector('#dashboard');
+  const welcome = document.querySelector('#welcome');
+  const requestMessage = document.querySelector('#request-message');
+  const requestsBox = document.querySelector('#requests');
+
+  let supabase = null;
+  let busy = false;
+
+  function showMessage(element, message) {
+    element.textContent = message;
+  }
+
+  function setSignedIn(user) {
+    loginPanel.hidden = Boolean(user);
+    dashboard.hidden = !user;
+    if (user) welcome.textContent = 'Signed in as ' + user.email;
+  }
+
+  function setupClient() {
+    if (SUPABASE_URL.includes('PASTE_') ||
+        SUPABASE_PUBLISHABLE_KEY.includes('PASTE_')) {
+      throw new Error(
+        'Setup needed: add your Supabase Project URL and publishable key in the code.'
+      );
+    }
+    supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  }
+
+  async function loadRequests() {
+    if (!supabase || busy) return;
+    busy = true;
+    showMessage(requestMessage, 'Loading requests…');
+    requestsBox.replaceChildren();
+
+    try {
+      const { data, error } = await supabase
+        .from('customer_requests')
+        .select('id, created_at, customer_name, email, phone, request_type, message, status')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        showMessage(requestMessage, 'No requests yet, or access is not configured.');
+        return;
+      }
+
+      showMessage(requestMessage, data.length + ' request(s) loaded.');
+
+      for (const item of data) {
+        const card = document.createElement('article');
+        card.className = 'request';
+
+        const heading = document.createElement('h3');
+        heading.textContent = item.customer_name || 'Customer';
+        card.append(heading);
+
+        const details = [
+          'Received: ' + new Date(item.created_at).toLocaleString(),
+          'Email: ' + (item.email || 'Not provided'),
+          'Phone: ' + (item.phone || 'Not provided'),
+          'Request type: ' + (item.request_type || 'Not specified'),
+          'Message: ' + (item.message || ''),
+          'Request ID: ' + item.id
+        ];
+
+        for (const detail of details) {
+          const p = document.createElement('p');
+          p.textContent = detail;
+          card.append(p);
+        }
+
+        const label = document.createElement('label');
+        label.textContent = 'Status';
+        const select = document.createElement('select');
+
+        for (const status of ['New', 'In Progress', 'Completed', 'Closed']) {
+          const option = document.createElement('option');
+          option.value = status;
+          option.textContent = status;
+          select.append(option);
+        }
+
+        select.value = item.status || 'New';
+        label.append(select);
+        card.append(label);
+
+        const save = document.createElement('button');
+        save.textContent = 'Save Status';
+        save.addEventListener('click', async () => {
+          save.disabled = true;
+          try {
+            const { error } = await supabase
+              .from('customer_requests')
+              .update({ status: select.value })
+              .eq('id', item.id);
+            if (error) throw error;
+            showMessage(requestMessage, 'Status saved for request ' + item.id + '.');
+          } catch (error) {
+            showMessage(requestMessage, 'Could not save status: ' + error.message);
+          } finally {
+            save.disabled = false;
+          }
+        });
+        card.append(save);
+        requestsBox.append(card);
+      }
+    } catch (error) {
+      showMessage(requestMessage, 'Could not load requests: ' + error.message);
+    } finally {
+      busy = false;
+    }
+  }
+
+  loginForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    showMessage(loginMessage, '');
+
+    try {
+      if (!supabase) setupClient();
+
+      const email = document.querySelector('#email').value.trim();
+      const password = document.querySelector('#password').value;
+
+      if (email.toLowerCase() !== OWNER_EMAIL) {
+        throw new Error('This login is reserved for the authorized owner email.');
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email, password
+      });
+      if (error) throw error;
+      if (data.user?.email?.toLowerCase() !== OWNER_EMAIL) {
+        await supabase.auth.signOut();
+        throw new Error('This account is not authorized as the owner.');
+      }
+
+      document.querySelector('#password').value = '';
+      setSignedIn(data.user);
+      await loadRequests();
+    } catch (error) {
+      showMessage(loginMessage, error.message);
+    }
+  });
+
+  document.querySelector('#refresh').addEventListener('click', loadRequests);
+
+  document.querySelector('#logout').addEventListener('click', async () => {
+    if (supabase) await supabase.auth.signOut();
+    setSignedIn(null);
+    requestsBox.replaceChildren();
+    showMessage(loginMessage, 'You have signed out.');
+    showMessage(requestMessage, '');
+  });
+
+  try {
+    setupClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user?.email?.toLowerCase() === OWNER_EMAIL) {
+      setSignedIn(session.user);
+      await loadRequests();
+    } else {
+      if (session) await supabase.auth.signOut();
+      setSignedIn(null);
+    }
+  } catch (error) {
+    showMessage(loginMessage, error.message);
+  }
+</script>
+</body>
+</html>
