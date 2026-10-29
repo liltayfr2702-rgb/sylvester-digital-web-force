@@ -677,6 +677,8 @@ https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz
           
 <form id="dwf-inquiry-form">   <label for="dwf-name">Your name</label>   <input id="dwf-name" name="customer_name" type="text"          autocomplete="name" required>    <label for="dwf-email">Email address</label>   <input id="dwf-email" name="email" type="email"          autocomplete="email" required>    <label for="dwf-phone">Phone number (optional)</label>   <input id="dwf-phone" name="phone" type="tel"          autocomplete="tel">    <label for="dwf-type">What do you need help with?</label>   <select id="dwf-type" name="request_type" required>     <option value="">Choose a service</option>     <option>Website Design &amp; Development</option>     <option>Website Management &amp; Maintenance</option>     <option>Branding &amp; Graphic Design</option>     <option>App Design &amp; Development</option>     <option>SEO &amp; Digital Growth</option>     <option>Automation &amp; Integrations</option>     <option>Something else</option>   </select>    <label for="dwf-message">Tell us about your project</label>   <textarea id="dwf-message" name="message"             rows="5" required></textarea>    <button class="button" type="submit">Send Project Inquiry</button>   <p id="dwf-form-status" role="status" aria-live="polite"></p> </form>
 
+<div class="cf-turnstile" data-sitekey="0x4AAAAAAFrmp42MgStsvBB6"></div>
+
         </div>
         <p style="color:var(--muted);font-size:.82rem;margin-top:14px;">Project inquiries will be connected once D.W.F.'s business contact email is chosen.</p>
       </div>
@@ -758,6 +760,8 @@ https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz
   });
 </script>
 
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 </body>
 </html>
