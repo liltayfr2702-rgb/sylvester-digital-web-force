@@ -675,7 +675,7 @@ https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz
             <p>Tell us what you're building, what you'd like to improve, and where you want to go. We'll learn about your needs before recommending a solution and preparing a custom quote.</p>
           </div>
           
-<a class="button" href="https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz6BHsdLAYeA/viewform?usp=sharing&amp;ouid=109205409995790628835" target="_blank" rel="noopener noreferrer">Start Your Project <span aria-hidden="true">↗</span></a>
+<form id="dwf-inquiry-form">   <label for="dwf-name">Your name</label>   <input id="dwf-name" name="customer_name" type="text"          autocomplete="name" required>    <label for="dwf-email">Email address</label>   <input id="dwf-email" name="email" type="email"          autocomplete="email" required>    <label for="dwf-phone">Phone number (optional)</label>   <input id="dwf-phone" name="phone" type="tel"          autocomplete="tel">    <label for="dwf-type">What do you need help with?</label>   <select id="dwf-type" name="request_type" required>     <option value="">Choose a service</option>     <option>Website Design &amp; Development</option>     <option>Website Management &amp; Maintenance</option>     <option>Branding &amp; Graphic Design</option>     <option>App Design &amp; Development</option>     <option>SEO &amp; Digital Growth</option>     <option>Automation &amp; Integrations</option>     <option>Something else</option>   </select>    <label for="dwf-message">Tell us about your project</label>   <textarea id="dwf-message" name="message"             rows="5" required></textarea>    <button class="button" type="submit">Send Project Inquiry</button>   <p id="dwf-form-status" role="status" aria-live="polite"></p> </form>
 
         </div>
         <p style="color:var(--muted);font-size:.82rem;margin-top:14px;">Project inquiries will be connected once D.W.F.'s business contact email is chosen.</p>
@@ -693,5 +693,54 @@ https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+    const SUPABASE_URL = "https://noxbmlesfhgsdspcpoaj.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_JOFhXQXTovf37c42RJyQeQ_kUXNYWcW";
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    const form = document.getElementById("dwf-inquiry-form");
+    const status = document.getElementById("dwf-form-status");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const button = form.querySelector('button[type="submit"]');
+      button.disabled = true;
+      status.textContent = "Sending your inquiry...";
+
+      const data = new FormData(form);
+
+      const request = {
+        customer_name: data.get("customer_name").trim(),
+        email: data.get("email").trim(),
+        phone: data.get("phone").trim(),
+        request_type: data.get("request_type").trim(),
+        message: data.get("message").trim()
+      };
+
+      try {
+        const { error } = await supabase
+          .from("customer_requests")
+          .insert([request]);
+
+        if (error) throw error;
+
+        status.textContent = "Thank you! Your inquiry has been received.";
+        form.reset();
+      } catch (error) {
+        console.error(error);
+        status.textContent = "We couldn't send your inquiry. Please try again.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+
 </body>
 </html>
