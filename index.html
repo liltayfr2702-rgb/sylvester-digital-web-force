@@ -711,7 +711,7 @@ https://docs.google.com/forms/d/e/1FAIpQLSf2tasNWtVNwkpdouM9sZc2uB2kgvjCqErSSPxz
 
     const button = form.querySelector('button[type="submit"]');
     const data = new FormData(form);
-    const token = data.get("cf-turnstile-response");
+    const token = document.querySelector('[name="cf-turnstile-response"]')?.value;
 
     if (!token) {
       status.textContent = "Please complete the security check.";
