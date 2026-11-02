@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>D.W.F. | Owner Dashboard</title>
   <meta name="robots" content="noindex, nofollow">
+
   <style>
     :root {
       color-scheme: dark;
@@ -16,69 +17,162 @@
       --yellow: #ffd600;
       --text: #f6f3ff;
       --muted: #b8b4c7;
+      --border: #393044;
     }
+
     * { box-sizing: border-box; }
+
     body {
-      margin: 0; padding: 24px;
-      background: var(--bg); color: var(--text);
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
       font: 16px/1.5 Inter, system-ui, sans-serif;
     }
+
     main { max-width: 1050px; margin: 0 auto; }
+
     h1 { color: var(--yellow); }
     h2 { margin-top: 0; }
-    .brand { color: #b78aff; font-weight: 800; letter-spacing: 2px; }
+    h3 { color: #c49aff; }
+
+    .brand {
+      color: #b78aff;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
     .panel {
-      background: var(--panel); border: 1px solid #393044;
-      border-radius: 16px; padding: 22px; margin: 20px 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin: 20px 0;
     }
-    input, button, select {
-      width: 100%; padding: 12px; margin: 6px 0 14px;
-      border-radius: 8px; font: inherit;
+
+    input, button, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0 14px;
+      border-radius: 8px;
+      font: inherit;
     }
-    input, select {
-      color: var(--text); background: #0b0b12;
+
+    input, select, textarea {
+      color: var(--text);
+      background: #0b0b12;
       border: 1px solid #514564;
     }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
     button {
-      background: var(--purple); color: white;
-      border: 0; font-weight: 700; cursor: pointer;
+      background: var(--purple);
+      color: white;
+      border: 0;
+      font-weight: 700;
+      cursor: pointer;
     }
+
     button.secondary { background: #30283e; }
-    button:focus-visible, input:focus-visible, select:focus-visible {
-      outline: 2px solid var(--yellow); outline-offset: 2px;
+    button:disabled { opacity: .6; cursor: wait; }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid var(--yellow);
+      outline-offset: 2px;
     }
+
+    label {
+      display: block;
+      font-weight: 650;
+      margin-top: 8px;
+    }
+
     .muted { color: var(--muted); }
-    .notice { white-space: pre-wrap; overflow-wrap: anywhere; }
-    .request {
-      border: 1px solid #393044; border-radius: 12px;
-      padding: 16px; margin: 14px 0;
+
+    .notice {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
     }
+
+    .request {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin: 18px 0;
+      background: #101017;
+    }
+
     .request p { overflow-wrap: anywhere; }
-    .request select { max-width: 260px; }
+
+    .section-title {
+      color: var(--yellow);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-top: 24px;
+    }
+
+    .deposit-preview {
+      color: var(--yellow);
+      font-weight: 800;
+    }
+
+    .request-id {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     [hidden] { display: none !important; }
+
     @media (min-width: 650px) {
-      .login-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
     }
   </style>
 </head>
+
 <body>
 <main>
   <p class="brand">D.W.F. · SYLVESTER DIGITAL WEB FORCE</p>
   <h1>Owner Dashboard</h1>
-  <p class="muted">Manage customer requests and support inquiries.</p>
+  <p class="muted">
+    Manage customer requests, project approvals, pricing, and payments.
+  </p>
 
   <section class="panel" id="login-panel">
     <h2>Owner Login</h2>
     <p class="muted">Sign in with your authorized owner account.</p>
+
     <form id="login-form">
       <label for="email">Owner email</label>
-      <input id="email" type="email" autocomplete="username"
-        value="sylvesterdigitalwebforce@gmail.com" required>
+      <input
+        id="email"
+        type="email"
+        autocomplete="username"
+        value="sylvesterdigitalwebforce@gmail.com"
+        required
+      >
+
       <label for="password">Password</label>
-      <input id="password" type="password"
-        autocomplete="current-password" required>
-      <button type="submit">Sign In</button>
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      >
+
+      <button type="submit" id="login-button">Sign In</button>
     </form>
+
     <p id="login-message" class="notice" role="status"></p>
   </section>
 
@@ -86,8 +180,10 @@
     <div class="panel">
       <h2>Customer Requests</h2>
       <p id="welcome" class="muted"></p>
+
       <button id="refresh">Refresh Requests</button>
       <button id="logout" class="secondary">Sign Out</button>
+
       <p id="request-message" class="notice" role="status"></p>
       <div id="requests"></div>
     </div>
@@ -98,21 +194,29 @@
   import { createClient } from
     'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-  // Replace these two placeholders with your own project details.
-  // Use only the Project URL and publishable key here.
-  const SUPABASE_URL = 'https://noxbmlesfhgsdspcpoaj.supabase.co';
-  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_JOFhXQXTovf37c42RJyQeQ_kUXNYWcW';
-  const OWNER_EMAIL = 'sylvesterdigitalwebforce@gmail.com';
+  const SUPABASE_URL =
+    'https://noxbmlesfhgsdspcpoaj.supabase.co';
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    'sb_publishable_JOFhXQXTovf37c42RJyQeQ_kUXNYWcW';
+
+  const OWNER_EMAIL =
+    'sylvesterdigitalwebforce@gmail.com';
+
+  const supabase = createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
 
   const loginPanel = document.querySelector('#login-panel');
   const loginForm = document.querySelector('#login-form');
   const loginMessage = document.querySelector('#login-message');
+  const loginButton = document.querySelector('#login-button');
   const dashboard = document.querySelector('#dashboard');
   const welcome = document.querySelector('#welcome');
   const requestMessage = document.querySelector('#request-message');
   const requestsBox = document.querySelector('#requests');
 
-  let supabase = null;
   let busy = false;
 
   function showMessage(element, message) {
@@ -122,21 +226,83 @@
   function setSignedIn(user) {
     loginPanel.hidden = Boolean(user);
     dashboard.hidden = !user;
-    if (user) welcome.textContent = 'Signed in as ' + user.email;
+
+    if (user) {
+      welcome.textContent = 'Signed in as ' + user.email;
+    }
   }
 
-  function setupClient() {
-    if (SUPABASE_URL.includes('PASTE_') ||
-        SUPABASE_PUBLISHABLE_KEY.includes('PASTE_')) {
-      throw new Error(
-        'Setup needed: add your Supabase Project URL and publishable key in the code.'
-      );
+  function makeElement(tag, text, className) {
+    const element = document.createElement(tag);
+
+    if (text !== undefined) {
+      element.textContent = text;
     }
-    supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    if (className) {
+      element.className = className;
+    }
+
+    return element;
+  }
+
+  function addField(parent, labelText, control) {
+    const wrapper = document.createElement('div');
+    const label = makeElement('label', labelText);
+
+    wrapper.append(label, control);
+    parent.append(wrapper);
+
+    return control;
+  }
+
+  function makeSelect(values, currentValue) {
+    const select = document.createElement('select');
+
+    for (const value of values) {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      select.append(option);
+    }
+
+    select.value = values.includes(currentValue)
+      ? currentValue
+      : values[0];
+
+    return select;
+  }
+
+  function makeMoneyInput(value) {
+    const input = document.createElement('input');
+
+    input.type = 'number';
+    input.min = '0';
+    input.step = '0.01';
+    input.placeholder = '0.00';
+
+    if (value !== null && value !== undefined) {
+      input.value = value;
+    }
+
+    return input;
+  }
+
+  function moneyValue(input) {
+    if (input.value.trim() === '') return null;
+
+    const value = Number(input.value);
+
+    if (!Number.isFinite(value) || value < 0) {
+      throw new Error('Please enter a valid non-negative amount.');
+    }
+
+    return Math.round(value * 100) / 100;
   }
 
   async function loadRequests() {
-    if (!supabase || busy) return;
+    if (busy) return;
+
     busy = true;
     showMessage(requestMessage, 'Loading requests…');
     requestsBox.replaceChildren();
@@ -144,78 +310,217 @@
     try {
       const { data, error } = await supabase
         .from('customer_requests')
-        .select('id, created_at, customer_name, email, phone, request_type, message, status')
+        .select(`
+          id,
+          created_at,
+          customer_name,
+          email,
+          phone,
+          request_type,
+          message,
+          status,
+          approved_price,
+          deposit_amount,
+          approval_status,
+          payment_status,
+          admin_notes
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
       if (!data || data.length === 0) {
-        showMessage(requestMessage, 'No requests yet, or access is not configured.');
+        showMessage(requestMessage, 'No customer requests found.');
         return;
       }
 
-      showMessage(requestMessage, data.length + ' request(s) loaded.');
+      showMessage(
+        requestMessage,
+        data.length + ' customer request(s) loaded.'
+      );
 
       for (const item of data) {
-        const card = document.createElement('article');
-        card.className = 'request';
+        const card = makeElement('article', undefined, 'request');
 
-        const heading = document.createElement('h3');
-        heading.textContent = item.customer_name || 'Customer';
-        card.append(heading);
+        card.append(
+          makeElement('h3', item.customer_name || 'Customer'),
+          makeElement(
+            'p',
+            'Received: ' + new Date(item.created_at).toLocaleString()
+          ),
+          makeElement('p', 'Email: ' + (item.email || 'Not provided')),
+          makeElement('p', 'Phone: ' + (item.phone || 'Not provided')),
+          makeElement(
+            'p',
+            'Request type: ' + (item.request_type || 'Not specified')
+          ),
+          makeElement('p', 'Message: ' + (item.message || '')),
+          makeElement('p', 'Request ID: ' + item.id, 'request-id')
+        );
 
-        const details = [
-          'Received: ' + new Date(item.created_at).toLocaleString(),
-          'Email: ' + (item.email || 'Not provided'),
-          'Phone: ' + (item.phone || 'Not provided'),
-          'Request type: ' + (item.request_type || 'Not specified'),
-          'Message: ' + (item.message || ''),
-          'Request ID: ' + item.id
-        ];
+        card.append(
+          makeElement('h3', 'Project Management', 'section-title')
+        );
 
-        for (const detail of details) {
-          const p = document.createElement('p');
-          p.textContent = detail;
-          card.append(p);
+        const fieldGrid = makeElement('div', undefined, 'field-grid');
+
+        const requestStatus = makeSelect(
+          ['New', 'In Progress', 'Completed', 'Closed'],
+          item.status || 'New'
+        );
+
+        const approvalStatus = makeSelect(
+          ['Pending', 'Approved', 'Rejected'],
+          item.approval_status || 'Pending'
+        );
+
+        addField(fieldGrid, 'Request Status', requestStatus);
+        addField(fieldGrid, 'Approval Decision', approvalStatus);
+
+        card.append(fieldGrid);
+
+        card.append(
+          makeElement('h3', 'Project Pricing', 'section-title')
+        );
+
+        const pricingGrid = makeElement('div', undefined, 'field-grid');
+
+        const priceInput = makeMoneyInput(item.approved_price);
+        const depositInput = makeMoneyInput(item.deposit_amount);
+
+        addField(pricingGrid, 'Approved Project Price ($)', priceInput);
+        addField(pricingGrid, 'Required Deposit ($)', depositInput);
+
+        const depositPreview = makeElement(
+          'p',
+          '50% deposit: Enter a project price.',
+          'deposit-preview'
+        );
+
+        priceInput.addEventListener('input', () => {
+          const price = Number(priceInput.value);
+
+          if (
+            priceInput.value.trim() === '' ||
+            !Number.isFinite(price) ||
+            price < 0
+          ) {
+            depositPreview.textContent =
+              '50% deposit: Enter a valid project price.';
+            return;
+          }
+
+          const deposit = Math.round(price * 50) / 100;
+          depositInput.value = deposit.toFixed(2);
+
+          depositPreview.textContent =
+            'Calculated 50% deposit: $' + deposit.toFixed(2);
+        });
+
+        if (item.approved_price !== null &&
+            item.approved_price !== undefined) {
+          const existingDeposit = item.deposit_amount ??
+            Math.round(Number(item.approved_price) * 50) / 100;
+
+          depositPreview.textContent =
+            'Current deposit amount: $' +
+            Number(existingDeposit).toFixed(2);
         }
 
-        const label = document.createElement('label');
-        label.textContent = 'Status';
-        const select = document.createElement('select');
+        card.append(pricingGrid, depositPreview);
 
-        for (const status of ['New', 'In Progress', 'Completed', 'Closed']) {
-          const option = document.createElement('option');
-          option.value = status;
-          option.textContent = status;
-          select.append(option);
-        }
+        card.append(
+          makeElement('h3', 'Payment Tracking', 'section-title')
+        );
 
-        select.value = item.status || 'New';
-        label.append(select);
-        card.append(label);
+        const paymentStatus = makeSelect(
+          ['Unpaid', 'Deposit Paid', 'Paid', 'Refunded'],
+          item.payment_status || 'Unpaid'
+        );
 
-        const save = document.createElement('button');
-        save.textContent = 'Save Status';
+        addField(card, 'Payment Status', paymentStatus);
+
+        card.append(
+          makeElement('h3', 'Private Owner Notes', 'section-title')
+        );
+
+        const notes = document.createElement('textarea');
+        notes.placeholder =
+          'Private notes about this customer or project…';
+        notes.value = item.admin_notes || '';
+
+        addField(card, 'Admin Notes (not shown publicly)', notes);
+
+        const save = makeElement('button', 'Save Project Updates');
+
         save.addEventListener('click', async () => {
           save.disabled = true;
+          showMessage(
+            requestMessage,
+            'Saving request ' + item.id + '…'
+          );
+
           try {
+            const approvedPrice = moneyValue(priceInput);
+            const depositAmount = moneyValue(depositInput);
+
+            if (
+              approvalStatus.value === 'Approved' &&
+              approvedPrice === null
+            ) {
+              throw new Error(
+                'Enter the approved project price before approving.'
+              );
+            }
+
+            if (
+              approvedPrice !== null &&
+              depositAmount !== null &&
+              depositAmount > approvedPrice
+            ) {
+              throw new Error(
+                'The deposit cannot exceed the project price.'
+              );
+            }
+
+            const updates = {
+              status: requestStatus.value,
+              approved_price: approvedPrice,
+              deposit_amount: depositAmount,
+              approval_status: approvalStatus.value,
+              payment_status: paymentStatus.value,
+              admin_notes: notes.value.trim()
+            };
+
             const { error } = await supabase
               .from('customer_requests')
-              .update({ status: select.value })
+              .update(updates)
               .eq('id', item.id);
+
             if (error) throw error;
-            showMessage(requestMessage, 'Status saved for request ' + item.id + '.');
+
+            showMessage(
+              requestMessage,
+              'Project updates saved for request ' + item.id + '.'
+            );
           } catch (error) {
-            showMessage(requestMessage, 'Could not save status: ' + error.message);
+            showMessage(
+              requestMessage,
+              'Could not save updates: ' + error.message
+            );
           } finally {
             save.disabled = false;
           }
         });
+
         card.append(save);
         requestsBox.append(card);
       }
     } catch (error) {
-      showMessage(requestMessage, 'Could not load requests: ' + error.message);
+      showMessage(
+        requestMessage,
+        'Could not load requests: ' + error.message
+      );
     } finally {
       busy = false;
     }
@@ -223,48 +528,77 @@
 
   loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+
     showMessage(loginMessage, '');
+    loginButton.disabled = true;
 
     try {
-      if (!supabase) setupClient();
-
       const email = document.querySelector('#email').value.trim();
       const password = document.querySelector('#password').value;
 
       if (email.toLowerCase() !== OWNER_EMAIL) {
-        throw new Error('This login is reserved for the authorized owner email.');
+        throw new Error(
+          'This login is reserved for the authorized owner email.'
+        );
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email, password
-      });
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
       if (error) throw error;
+
       if (data.user?.email?.toLowerCase() !== OWNER_EMAIL) {
         await supabase.auth.signOut();
-        throw new Error('This account is not authorized as the owner.');
+
+        throw new Error(
+          'This account is not authorized as the owner.'
+        );
       }
 
       document.querySelector('#password').value = '';
+
       setSignedIn(data.user);
       await loadRequests();
     } catch (error) {
       showMessage(loginMessage, error.message);
+    } finally {
+      loginButton.disabled = false;
     }
   });
 
-  document.querySelector('#refresh').addEventListener('click', loadRequests);
+  document.querySelector('#refresh').addEventListener(
+    'click',
+    loadRequests
+  );
 
-  document.querySelector('#logout').addEventListener('click', async () => {
-    if (supabase) await supabase.auth.signOut();
-    setSignedIn(null);
-    requestsBox.replaceChildren();
-    showMessage(loginMessage, 'You have signed out.');
-    showMessage(requestMessage, '');
-  });
+  document.querySelector('#logout').addEventListener(
+    'click',
+    async () => {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        showMessage(requestMessage, 'Sign out failed: ' + error.message);
+        return;
+      }
+
+      setSignedIn(null);
+      requestsBox.replaceChildren();
+
+      showMessage(loginMessage, 'You have signed out.');
+      showMessage(requestMessage, '');
+    }
+  );
 
   try {
-    setupClient();
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error) throw error;
+
+    const session = data.session;
+
     if (session?.user?.email?.toLowerCase() === OWNER_EMAIL) {
       setSignedIn(session.user);
       await loadRequests();
