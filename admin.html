@@ -513,8 +513,102 @@
           }
         });
 
-        card.append(save);
-        requestsBox.append(card);
+  const checkout = makeElement(
+  'button',
+  'Create Deposit Checkout',
+  'secondary'
+);
+
+const savedPrice = item.approved_price == null
+  ? null
+  : Number(item.approved_price);
+
+const savedDeposit = item.deposit_amount == null
+  ? null
+  : Number(item.deposit_amount);
+
+const canCreateCheckout =
+  item.approval_status === 'Approved' &&
+  Number.isFinite(savedPrice) &&
+  savedPrice > 0 &&
+  Number.isFinite(savedDeposit) &&
+  savedDeposit > 0 &&
+  savedDeposit <= savedPrice &&
+  !['Deposit Paid', 'Paid', 'Refunded'].includes(
+    item.payment_status || 'Unpaid'
+  );
+
+checkout.disabled = !canCreateCheckout;
+
+checkout.addEventListener('click', async () => {
+  let checkoutWindow = null;
+
+  try {
+    const currentPrice = moneyValue(priceInput);
+    const currentDeposit = moneyValue(depositInput);
+
+    if (
+      approvalStatus.value !== item.approval_status ||
+      currentPrice !== savedPrice ||
+      currentDeposit !== savedDeposit
+    ) {
+      throw new Error(
+        'Save your project updates first, then refresh the requests.'
+      );
+    }
+
+    checkoutWindow = window.open('about:blank', '_blank');
+
+    if (!checkoutWindow) {
+      throw new Error(
+        'Pop-up blocked. Allow pop-ups for this website and try again.'
+      );
+    }
+
+    checkout.disabled = true;
+
+    showMessage(
+      requestMessage,
+      'Creating deposit checkout for request ' + item.id + '…'
+    );
+
+    const { data, error } = await supabase.functions.invoke(
+      'dwf-create-checkout',
+      {
+        body: { request_id: item.id }
+      }
+    );
+
+    if (error) throw error;
+
+    if (!data || !data.checkout_url) {
+      throw new Error('Stripe did not return a checkout link.');
+    }
+
+    checkoutWindow.location.href = data.checkout_url;
+
+    showMessage(
+      requestMessage,
+      'Deposit checkout created for request ' + item.id + '.'
+    );
+
+  } catch (error) {
+    if (checkoutWindow && !checkoutWindow.closed) {
+      checkoutWindow.close();
+    }
+
+    showMessage(
+      requestMessage,
+      'Could not create checkout: ' + error.message
+    );
+
+  } finally {
+    checkout.disabled = !canCreateCheckout;
+  }
+});
+
+card.append(save, checkout);
+requestsBox.append(card);
       }
     } catch (error) {
       showMessage(
